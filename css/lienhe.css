@@ -1,0 +1,11 @@
+.border-heading {
+    border: 1px solid red;
+    color:red;
+    transition: .3s;
+}
+
+.border-heading > h2:hover {
+    background-color: red;
+    color: white!important;
+    z-index: 999;
+}

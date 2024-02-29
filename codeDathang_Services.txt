@@ -1,0 +1,40 @@
+else if (url == "/Dathang") {
+                req.on('end', function () {
+                    let dsDathang = JSON.parse(noi_dung_nhan);
+                    let ket_qua = { "Noi_dung": [] };
+                    dsDathang.forEach(item => {
+                        let filter = {
+                            "Ma_so": item.key
+                        }
+                        db.getOne("mobile", filter).then(result => {
+                            item.dathang.So_Phieu_Dat = result.Danh_sach_Phieu_Dat.length + 1;
+                            result.Danh_sach_Phieu_Dat.push(item.dathang);
+                            // Update
+                            let capnhat = {
+                                $set: { Danh_sach_Phieu_Dat: result.Danh_sach_Phieu_Dat }
+                            }
+                            let obj = {
+                                "Ma_so": result.Ma_so,
+                                "Update": true
+                            }
+                            db.updateOne("mobile", filter, capnhat).then(result => {
+                                if (result.modifiedCount == 0) {
+                                    obj.Update = false
+
+                                }
+                                ket_qua.Noi_dung.push(obj);
+                                //console.log(ket_qua.Noi_dung)
+                                if (ket_qua.Noi_dung.length == dsDathang.length) {
+                                    res.end(JSON.stringify(ket_qua));
+                                }
+                            }).catch(err=>{
+                                console.log(err)
+                            })
+                        }).catch(err=>{
+                            console.log(err);
+                        })
+
+                    })
+                })
+
+            }
